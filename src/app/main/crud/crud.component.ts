@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
+import { FormGroup, FormBuilder, Validators, FormControl, AbstractControl } from '@angular/forms';
 import { Table } from 'primeng/table';
 // import { Product } from 'src/app/demo/api/product';
 // import { ProductService } from 'src/app/demo/service/product.service';
@@ -12,9 +13,11 @@ import { ProductService } from 'src/app/@service/dummy.service';
     providers: [MessageService]
 })
 export class CrudComponent implements OnInit {
+    
+    productForm:FormGroup;
+
 
     productDialog: boolean = false;
-
     deleteProductDialog: boolean = false;
 
     deleteProductsDialog: boolean = false;
@@ -33,11 +36,20 @@ export class CrudComponent implements OnInit {
 
     rowsPerPageOptions = [5, 10, 20];
 
-    constructor(private productService: ProductService, private messageService: MessageService) { }
+    status=[
+        {label:"Available",value:"available"},
+        {label:"Unavailable",value:"unavailable"},
+    ]
+
+    constructor(private productService: ProductService,
+         private messageService: MessageService,
+         private fb: FormBuilder,
+         ) { }
 
     ngOnInit() {
         // this.productService.getProducts().then(data => this.products = data);
-        this.getAllProducts()
+        this.getAllProducts();
+        this.setProductForm();
 
         this.cols = [
             { field: 'product', header: 'Product' },
@@ -58,14 +70,28 @@ export class CrudComponent implements OnInit {
     this.productService.getAllProducts().subscribe(res => {
         this.products = res.products;
         console.log('All Products',this.products);
+        });
     }
-        );
 
+    setProductForm(){
+        this.productForm = this.fb.group({
+            title: new FormControl('', Validators.required),
+            brand: new FormControl('', Validators.required),
+
+        })
     }
+
+    get f() { return this.productForm.controls; }
+
+
     openNew() {
         this.product = {};
         this.submitted = false;
         this.productDialog = true;
+    }
+
+    productFormSubmit(){
+        alert("Form added")
     }
 
     deleteSelectedProducts() {
