@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Product } from 'src/app/demo/api/product';
 import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
-import { ProductService } from 'src/app/demo/service/product.service';
+// import { Product } from 'src/app/demo/api/product';
+// import { ProductService } from 'src/app/demo/service/product.service';
+import { Product } from 'src/app/@api/dummy';
+import { ProductService } from 'src/app/@service/dummy.service';
+
 
 @Component({
     templateUrl: './crud.component.html',
@@ -33,7 +36,8 @@ export class CrudComponent implements OnInit {
     constructor(private productService: ProductService, private messageService: MessageService) { }
 
     ngOnInit() {
-        this.productService.getProducts().then(data => this.products = data);
+        // this.productService.getProducts().then(data => this.products = data);
+        this.getAllProducts()
 
         this.cols = [
             { field: 'product', header: 'Product' },
@@ -50,6 +54,14 @@ export class CrudComponent implements OnInit {
         ];
     }
 
+    getAllProducts(){
+    this.productService.getAllProducts().subscribe(res => {
+        this.products = res.products;
+        console.log('All Products',this.products);
+    }
+        );
+
+    }
     openNew() {
         this.product = {};
         this.submitted = false;
@@ -92,26 +104,26 @@ export class CrudComponent implements OnInit {
     saveProduct() {
         this.submitted = true;
 
-        if (this.product.name?.trim()) {
-            if (this.product.id) {
-                // @ts-ignore
-                this.product.inventoryStatus = this.product.inventoryStatus.value ? this.product.inventoryStatus.value : this.product.inventoryStatus;
-                this.products[this.findIndexById(this.product.id)] = this.product;
-                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
-            } else {
-                this.product.id = this.createId();
-                this.product.code = this.createId();
-                this.product.image = 'product-placeholder.svg';
-                // @ts-ignore
-                this.product.inventoryStatus = this.product.inventoryStatus ? this.product.inventoryStatus.value : 'INSTOCK';
-                this.products.push(this.product);
-                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
-            }
+        // if (this.product.name?.trim()) {
+        //     if (this.product.id) {
+        //         // @ts-ignore
+        //         this.product.inventoryStatus = this.product.inventoryStatus.value ? this.product.inventoryStatus.value : this.product.inventoryStatus;
+        //         this.products[this.findIndexById(this.product.id)] = this.product;
+        //         this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
+        //     } else {
+        //         this.product.id = this.createId();
+        //         this.product.code = this.createId();
+        //         this.product.image = 'product-placeholder.svg';
+        //         // @ts-ignore
+        //         this.product.inventoryStatus = this.product.inventoryStatus ? this.product.inventoryStatus.value : 'INSTOCK';
+        //         this.products.push(this.product);
+        //         this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
+        //     }
 
-            this.products = [...this.products];
-            this.productDialog = false;
-            this.product = {};
-        }
+        //     this.products = [...this.products];
+        //     this.productDialog = false;
+        //     this.product = {};
+        // }
     }
 
     findIndexById(id: string): number {
