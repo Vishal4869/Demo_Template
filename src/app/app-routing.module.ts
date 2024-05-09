@@ -9,9 +9,18 @@ import { AppLayoutComponent } from "./layout/app.layout.component";
             {
                 path: '', component: AppLayoutComponent,
                 children: [
-                    { path: '', loadChildren: () => import('./main/dashbaord/dashboard.module').then(m => m.DashboardModule) },
+                    { path: '', loadChildren: () => import('./main/main.module').then(m => m.MainModule) },
+                    // { path: '', loadChildren: () => import('./main/dashbaord/dashboard.module').then(m => m.DashboardModule) },
+
                 ]
             },
+            
+            // {
+            //     path: '', component: AppLayoutComponent,
+            //     children: [
+            //         { path: '', loadChildren: () => import('./main/dashbaord/dashboard.module').then(m => m.DashboardModule) },
+            //     ]
+            // },
             // {
             //     path: '', component: AppLayoutComponent,
             //     children: [
