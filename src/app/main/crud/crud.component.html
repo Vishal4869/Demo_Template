@@ -19,7 +19,7 @@
                 </ng-template>
             </p-toolbar>
 
-            <p-table #dt [value]="products" [columns]="cols" styleClass="p-datatable-gridlines" responsiveLayout="stack" [breakpoint]="'960px'" [rows]="10" [globalFilterFields]="['name','country.name','representative.name','status']" [paginator]="true" [rowsPerPageOptions]="[10,20,0]" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [(selection)]="selectedProducts" selectionMode="multiple" [rowHover]="true" dataKey="id" >
+            <p-table #dt [value]="products" [columns]="cols" styleClass="p-datatable-gridlines" responsiveLayout="stack" [breakpoint]="'960px'" [rows]="10" [globalFilterFields]="['name','country.name','representative.name','status']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [(selection)]="selectedProducts" selectionMode="multiple" [rowHover]="true" dataKey="id" >
                 <ng-template pTemplate="caption">
                     <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
                         <h5 class="m-0">Manage Products</h5>
@@ -97,18 +97,63 @@
             <ng-template pTemplate="content" [formGroup]="productForm">
                 <div class="field">
                     <label for="name">Name</label>
-                    <input type="text" pInputText id="name" formControlName="title" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && f['title'].errors && f['title'].touched}"/>
-                    <small class="ng-dirty ng-invalid" *ngIf="f['title'].touched && f['title'].invalid">Name is required.</small>
+                    <input type="text" pInputText id="name" formControlName="title" required autofocus 
+                    [ngClass]="{'ng-invalid ng-dirty' : f['title'].errors && f['title'].touched}"/>
+                    <div class="p-error" *ngIf="f['title'].touched && f['title'].invalid">
+                        <small *ngIf="f['title'].errors?.['required']">Name is required.</small>
+                    </div>
                 </div>
-
                 <div class="field">
                     <label for="name">Brand</label>
-                    <input type="text" pInputText id="brand" formControlName="brand" required  [ngClass]="{'ng-invalid ng-dirty' : submitted && f['brand'].errors && f['brand'].touched}"/>
-                    <small class="ng-dirty ng-invalid" *ngIf="f['brand'].touched && f['brand'].invalid">brand is required.</small>
+                    <p-autoComplete formControlName="brand" [suggestions]="filteredBrands" (completeMethod)="filterBrands($event)" 
+                    [ngClass]="{'ng-invalid ng-dirty' : f['brand'].errors && f['brand'].touched}">
+                    </p-autoComplete>
+                    <div class="p-error" *ngIf="f['brand'].touched && f['title'].invalid">
+                        <small class="p-error" *ngIf="f['brand'].errors?.['required']">Brand is required.</small>
+                    </div>
                 </div>
+                <div class="field">
+                    <label for="name">Price</label>
+                    <input type="number" pInputText id="price" formControlName="price" required  
+                    [ngClass]="{'ng-invalid ng-dirty' : f['price'].errors && f['price'].touched}"/>
+                    <div class="p-error" *ngIf="f['price'].touched && f['price'].invalid">
+                        <small class="p-error" *ngIf="f['price'].errors?.['required']">Price is required.</small>
+                        <small class="p-error" *ngIf="f['price'].errors?.['min']">Price should be greater than 0.</small>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="name">Percentage</label>
+                    <span class="p-input-icon-right">
+						<i class="pi pi-percentage"></i>
+                        <input type="number" pInputText id="discountPercentage" formControlName="discountPercentage"  
+                        [ngClass]="{'ng-invalid ng-dirty' : f['discountPercentage'].errors && f['discountPercentage'].touched}"/>
+                    </span>
+                    <div class="p-error" *ngIf="f['discountPercentage'].touched && f['discountPercentage'].invalid">
+                        <small class="p-error" *ngIf="f['discountPercentage'].errors?.['min']">Percentage should not negative.</small>
+                        <small class="p-error" *ngIf="f['discountPercentage'].errors?.['max']">Percentage should be less than 100</small>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="name">Rating</label><br/>
+                    <p-rating formControlName="rating"></p-rating>
+                    <div class="p-error" *ngIf="f['rating'].touched && f['rating'].invalid">
+                        <small *ngIf="f['rating'].errors?.['required']">Rating is required.</small>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="name">Stock</label>
+                    <input type="number" pInputText id="stock" formControlName="stock" required  
+                    [ngClass]="{'ng-invalid ng-dirty' : f['stock'].errors && f['stock'].touched}"/>
+                    <div class="p-error" *ngIf="f['stock'].touched && f['stock'].invalid">
+                        <small class="p-error" *ngIf="f['stock'].errors?.['required']">Stock is required.</small>
+                        <small class="p-error" *ngIf="f['stock'].errors?.['min']">Stock should be greater than 0.</small>
+                    </div>
+                </div>
+
             </ng-template>
 
             <ng-template pTemplate="footer">
+                <p>{{productForm.value|json}}</p>
                 <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-raised p-button-outlined p-button-warning" (click)="hideDialog()"></button>
                 <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-raised p-button-outlined p-button-success" [disabled]="productForm.invalid" (click)="productFormSubmit()"></button>
             </ng-template>

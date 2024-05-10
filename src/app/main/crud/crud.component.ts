@@ -7,6 +7,10 @@ import { Table } from 'primeng/table';
 import { Product } from 'src/app/@api/dummy';
 import { ProductService } from 'src/app/@service/dummy.service';
 
+interface AutoCompleteCompleteEvent {
+    originalEvent: Event;
+    query: string;
+}
 
 @Component({
     templateUrl: './crud.component.html',
@@ -39,7 +43,20 @@ export class CrudComponent implements OnInit {
     status=[
         {label:"Available",value:"available"},
         {label:"Unavailable",value:"unavailable"},
-    ]
+    ];
+
+    // Brands= [
+    //     { "name": "Apple", "value": "apple" },
+    //     { "name": "Samsung", "value": "samsung" },
+    //     { "name": "OPPO", "value": "oppo" },
+    //     { "name": "Huawei", "value": "huawei" },
+    //     { "name": "Microsoft Surface", "value": "microsoft surface" },
+    //     { "name": "Infinix", "value": "infinix" }
+    // ];
+
+    Brands=[ "Apple", "Samsung", "OPPO", "Huawei", "Microsoft Surface", "Infinix", "HP Pavilion", "Impression of Acqua Di Gio", "Royal_Mirage"];
+
+    filteredBrands: any[] | undefined;
 
     constructor(private productService: ProductService,
          private messageService: MessageService,
@@ -77,11 +94,31 @@ export class CrudComponent implements OnInit {
         this.productForm = this.fb.group({
             title: new FormControl('', Validators.required),
             brand: new FormControl('', Validators.required),
+            price: new FormControl('', [Validators.required,Validators.min(1)]),
+            discountPercentage: new FormControl('', [Validators.max(100),Validators.min(0)]),
+            rating: new FormControl('', Validators.required),
+            stock: new FormControl('', [Validators.required,Validators.min(0)]),
 
         })
     }
 
     get f() { return this.productForm.controls; }
+
+
+    filterBrands(event: AutoCompleteCompleteEvent) {
+        let filtered: any[] = [];
+        let query = event.query;
+
+        for (let i = 0; i < (this.Brands as any[]).length; i++) {
+            let brand = (this.Brands as any[])[i];
+            if (brand.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+                filtered.push(brand);
+            }
+        }
+
+        this.filteredBrands = filtered;
+        console.log('filtered',filtered);
+    }
 
 
     openNew() {
