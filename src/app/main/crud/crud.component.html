@@ -96,7 +96,7 @@
         <p-dialog [(visible)]="productDialog" [style]="{width: '450px'}" header="Product Details" [modal]="true" class="p-fluid">
             <ng-template pTemplate="content" [formGroup]="productForm">
                 <div class="field">
-                    <label for="name">Name</label>
+                    <label for="name">Name <span class="text-red-500"> * </span></label>
                     <input type="text" pInputText id="name" formControlName="title" required autofocus 
                     [ngClass]="{'ng-invalid ng-dirty' : f['title'].errors && f['title'].touched}"/>
                     <div class="p-error" *ngIf="f['title'].touched && f['title'].invalid">
@@ -167,6 +167,29 @@
                     <div class="p-error" *ngIf="f['description'].touched && f['description'].invalid">
                         <small class="p-error" *ngIf="f['description'].errors?.['required']">Description is required.</small>
                     </div>
+                </div>
+                <div class="field">
+                        <label for="description">Images</label>
+                        <div class="border-dashed border-1 p-2" formArrayName="images">
+                            <div class="mb-2" *ngFor="let img of getImagesForm().controls; let i = index">
+                                <div class="flex justify-content-between gap-2" >
+                                    <div class="p-inputgroup" [formGroupName]="i">
+                                        <span class="p-inputgroup-addon">{{i+1}}</span>
+                                        <input type="text" pInputText placeholder="Image url" formControlName="image_url" />
+
+                                    </div>
+                                    <button pButton pRipple icon="pi pi-trash" class="p-button-outlined p-button-raised p-button-rounded p-button-warning" (click)="removeImages(i)"></button>
+                                </div>
+                                <div class="p-error" *ngIf="img.controls.image_url.touched && img.controls.image_url.invalid">
+                                    <small class="p-error" *ngIf="img.controls.image_url.errors?.['required']">Enter url for Image {{i+1}}.</small>
+                                    <small class="p-error" *ngIf="img.controls.image_url.errors?.['pattern']">Invalid url for Image {{i+1}}.</small>
+                                </div>
+                            </div>
+                            <div class="flex justify-content-center mt-1">
+                                <button pButton pRipple icon="pi pi-plus" class="p-button-raised p-button-rounded p-button-success mr-2" (click)="addImagesForm()"></button>
+                            </div>
+                        </div>
+
                 </div>
 
             </ng-template>

@@ -17,7 +17,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { DialogModule } from 'primeng/dialog';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AutoCompleteModule } from 'primeng/autocomplete';
-
+import { BadgeModule } from 'primeng/badge';
 @NgModule({
     imports: [
         CommonModule,
@@ -37,7 +37,8 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
         RadioButtonModule,
         InputNumberModule,
         DialogModule,
-        AutoCompleteModule
+        AutoCompleteModule,
+        BadgeModule
     ],
     declarations: [CrudComponent]
 })

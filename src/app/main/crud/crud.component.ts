@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
-import { FormGroup, FormBuilder, Validators, FormControl, AbstractControl } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl, AbstractControl, FormArray } from '@angular/forms';
 import { Table } from 'primeng/table';
 // import { Product } from 'src/app/demo/api/product';
 // import { ProductService } from 'src/app/demo/service/product.service';
@@ -107,7 +107,8 @@ export class CrudComponent implements OnInit {
             stock: new FormControl('', [Validators.required,Validators.min(0)]),
             category: new FormControl('', [Validators.required]),
             description: new FormControl('', Validators.required),
-
+            images: this.fb.array([this.imagesFiled()], Validators.required),
+            thumbnail:new FormControl('')
         })
     }
 
@@ -124,11 +125,27 @@ export class CrudComponent implements OnInit {
                 filtered.push(brand);
             }
         }
-
         this.filteredBrands = filtered;
         console.log('filtered',filtered);
     }
 
+    imagesFiled(){
+        const imageUrlPattern = 'https?:\/\/(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(?:\/[^\/?#]+)+\.(?:jpg|jpeg|png|gif|bmp|svg)';
+        return this.fb.group({
+          image_url: new FormControl('', [Validators.required,Validators.pattern(imageUrlPattern)])
+        })
+    }
+
+    getImagesForm(){
+        return this.productForm.get('images') as FormArray
+    }
+
+    addImagesForm(){
+        this.getImagesForm().push(this.imagesFiled())
+    }
+    removeImages(i:number){
+        this.getImagesForm().removeAt(i)
+    }
 
     openNew() {
         this.product = {};
