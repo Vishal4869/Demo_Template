@@ -45,18 +45,10 @@ export class CrudComponent implements OnInit {
         { "name": "Groceries", "value": "groceries" },
         { "name": "Home Decoration", "value": "home-decoration" }
     ]
-    
 
-    // Brands= [
-    //     { "name": "Apple", "value": "apple" },
-    //     { "name": "Samsung", "value": "samsung" },
-    //     { "name": "OPPO", "value": "oppo" },
-    //     { "name": "Huawei", "value": "huawei" },
-    //     { "name": "Microsoft Surface", "value": "microsoft surface" },
-    //     { "name": "Infinix", "value": "infinix" }
-    // ];
-
-    Brands=[ "Apple", "Samsung", "OPPO", "Huawei", "Microsoft Surface", "Infinix", "HP Pavilion", "Impression of Acqua Di Gio", "Royal_Mirage"];
+    Brands=[ "Apple", "Samsung", "OPPO", "Huawei", "Microsoft Surface",
+     "Infinix", "HP Pavilion", "Impression of Acqua Di Gio", "Royal_Mirage"
+    ];
 
     filteredBrands: any[] | undefined;
 
@@ -148,14 +140,24 @@ export class CrudComponent implements OnInit {
     }
 
     openNew() {
-        this.product = {};
-        this.submitted = false;
+        this.productForm.reset();
+        // this.submitted = false;
         this.productDialog = true;
     }
 
     productFormSubmit(){
-        alert("Form added")
+        console.log("form data",this.productForm.value);
+        if(this.productForm.valid){
+            this.productService.createProduct(this.productForm.value).subscribe(res => {
+                console.log('response',res);
+                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Products Created', life: 3000 });
+            },error =>{
+                    console.error('create Product Error',error);
+                    this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error in creating product', life: 3000 });
+            });
+        }
     }
+    
 
     deleteSelectedProducts() {
         this.deleteProductsDialog = true;
