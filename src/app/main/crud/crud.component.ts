@@ -19,31 +19,33 @@ interface AutoCompleteCompleteEvent {
 export class CrudComponent implements OnInit {
     
     productForm:FormGroup;
-
-
     productDialog: boolean = false;
     deleteProductDialog: boolean = false;
-
     deleteProductsDialog: boolean = false;
-
     products: Product[] = [];
-
     product: Product = {};
-
     selectedProducts: Product[] = [];
 
+    loading:boolean=true;
     submitted: boolean = false;
-
     cols: any[] = [];
-
     statuses: any[] = [];
-
     rowsPerPageOptions = [5, 10, 20];
 
     status=[
         {label:"Available",value:"available"},
         {label:"Unavailable",value:"unavailable"},
     ];
+
+    Categories = [
+        { "name": "Smartphones", "value": "smartphones" },
+        { "name": "Laptops", "value": "laptops" },
+        { "name": "Fragrances", "value": "fragrances" },
+        { "name": "Skincare", "value": "skincare" },
+        { "name": "Groceries", "value": "groceries" },
+        { "name": "Home Decoration", "value": "home-decoration" }
+    ]
+    
 
     // Brands= [
     //     { "name": "Apple", "value": "apple" },
@@ -87,6 +89,11 @@ export class CrudComponent implements OnInit {
     this.productService.getAllProducts().subscribe(res => {
         this.products = res.products;
         console.log('All Products',this.products);
+        this.loading=false;
+        },
+        error =>{
+            console.error('Get all Product Error',error);
+            this.loading=false;
         });
     }
 
@@ -98,6 +105,8 @@ export class CrudComponent implements OnInit {
             discountPercentage: new FormControl('', [Validators.max(100),Validators.min(0)]),
             rating: new FormControl('', Validators.required),
             stock: new FormControl('', [Validators.required,Validators.min(0)]),
+            category: new FormControl('', [Validators.required]),
+            description: new FormControl('', Validators.required),
 
         })
     }
