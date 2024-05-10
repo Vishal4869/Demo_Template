@@ -27,7 +27,7 @@ export class ProductService {
         return this.http.delete<any>(`${API_URL}/products/${id}`, { headers: headersData });
     }
     createProduct(Data:Product):Observable<Product>{
-        return this.http.post<any>(`${API_URL}/products/adddd`, Data,{ headers: headersData });
+        return this.http.post<any>(`${API_URL}/products/add`, Data,{ headers: headersData });
     }
 
     
