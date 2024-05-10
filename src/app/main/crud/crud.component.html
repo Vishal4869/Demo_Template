@@ -195,7 +195,7 @@
             </ng-template>
 
             <ng-template pTemplate="footer">
-                <p>{{productForm.value|json}}</p>
+                <!-- <p>{{productForm.value|json}}</p> -->
                 <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-raised p-button-outlined p-button-warning" (click)="hideDialog()"></button>
                 <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-raised p-button-outlined p-button-success" [disabled]="productForm.invalid" (click)="productFormSubmit()"></button>
             </ng-template>

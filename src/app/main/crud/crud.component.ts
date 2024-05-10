@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, FormControl, AbstractControl, FormArray } from '@angular/forms';
 import { Table } from 'primeng/table';
-// import { Product } from 'src/app/demo/api/product';
-// import { ProductService } from 'src/app/demo/service/product.service';
 import { Product } from 'src/app/@api/dummy';
 import { ProductService } from 'src/app/@service/dummy.service';
 
@@ -55,10 +54,11 @@ export class CrudComponent implements OnInit {
     constructor(private productService: ProductService,
          private messageService: MessageService,
          private fb: FormBuilder,
+         private router: Router,
+         private route: ActivatedRoute,
          ) { }
 
     ngOnInit() {
-        // this.productService.getProducts().then(data => this.products = data);
         this.getAllProducts();
         this.setProductForm();
 
@@ -68,12 +68,6 @@ export class CrudComponent implements OnInit {
             { field: 'category', header: 'Category' },
             { field: 'rating', header: 'Reviews' },
             { field: 'inventoryStatus', header: 'Status' }
-        ];
-
-        this.statuses = [
-            { label: 'INSTOCK', value: 'instock' },
-            { label: 'LOWSTOCK', value: 'lowstock' },
-            { label: 'OUTOFSTOCK', value: 'outofstock' }
         ];
     }
 
@@ -164,7 +158,7 @@ export class CrudComponent implements OnInit {
     }
 
     editProduct(product: Product) {
-        this.product = { ...product };
+        this.productForm.patchValue(product)
         this.productDialog = true;
     }
 
@@ -175,70 +169,38 @@ export class CrudComponent implements OnInit {
 
     confirmDeleteSelected() {
         this.deleteProductsDialog = false;
-        this.products = this.products.filter(val => !this.selectedProducts.includes(val));
         this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Products Deleted', life: 3000 });
         this.selectedProducts = [];
     }
 
     confirmDelete() {
         this.deleteProductDialog = false;
-        this.products = this.products.filter(val => val.id !== this.product.id);
-        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
-        this.product = {};
+        if(this.product.id){
+            this.productService.deleteOneProduct(this.product.id).subscribe(res => {
+                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
+                this.product = {};
+            },error =>{
+                    console.error('create Product Error',error);
+                    this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error in deleting product', life: 3000 });
+            });
+        }
     }
 
     hideDialog() {
+        this.productForm.reset();
         this.productDialog = false;
-        this.submitted = false;
+        // this.submitted = false;
     }
 
-    saveProduct() {
-        this.submitted = true;
-
-        // if (this.product.name?.trim()) {
-        //     if (this.product.id) {
-        //         // @ts-ignore
-        //         this.product.inventoryStatus = this.product.inventoryStatus.value ? this.product.inventoryStatus.value : this.product.inventoryStatus;
-        //         this.products[this.findIndexById(this.product.id)] = this.product;
-        //         this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
-        //     } else {
-        //         this.product.id = this.createId();
-        //         this.product.code = this.createId();
-        //         this.product.image = 'product-placeholder.svg';
-        //         // @ts-ignore
-        //         this.product.inventoryStatus = this.product.inventoryStatus ? this.product.inventoryStatus.value : 'INSTOCK';
-        //         this.products.push(this.product);
-        //         this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
-        //     }
-
-        //     this.products = [...this.products];
-        //     this.productDialog = false;
-        //     this.product = {};
-        // }
-    }
-
-    findIndexById(id: string): number {
-        let index = -1;
-        for (let i = 0; i < this.products.length; i++) {
-            if (this.products[i].id === id) {
-                index = i;
-                break;
-            }
-        }
-
-        return index;
-    }
-
-    createId(): string {
-        let id = '';
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        for (let i = 0; i < 5; i++) {
-            id += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        return id;
-    }
 
     onGlobalFilter(table: Table, event: Event) {
         table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
     }
+
+    partialReload(){
+        let currentUrl = this.router.url;
+        this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+        this.router.onSameUrlNavigation = 'reload';
+        this.router.navigate([currentUrl]);
+      }
 }

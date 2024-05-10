@@ -8,31 +8,13 @@ import { AuthGuard } from './@helper/auth.guard';
         RouterModule.forRoot([
             {
                 path: '', component: AppLayoutComponent,
-                canActivate:[AuthGuard],
+                // canActivate:[AuthGuard],
                 children: [
                     { path: '', loadChildren: () => import('./main/main.module').then(m => m.MainModule) },
                     // { path: '', loadChildren: () => import('./main/dashbaord/dashboard.module').then(m => m.DashboardModule) },
 
                 ]
             },
-            
-            // {
-            //     path: '', component: AppLayoutComponent,
-            //     children: [
-            //         { path: '', loadChildren: () => import('./main/dashbaord/dashboard.module').then(m => m.DashboardModule) },
-            //     ]
-            // },
-            // {
-            //     path: '', component: AppLayoutComponent,
-            //     children: [
-            //         { path: '', loadChildren: () => import('./demo/components/dashboard/dashboard.module').then(m => m.DashboardModule) },
-            //         { path: 'uikit', loadChildren: () => import('./demo/components/uikit/uikit.module').then(m => m.UIkitModule) },
-            //         { path: 'utilities', loadChildren: () => import('./demo/components/utilities/utilities.module').then(m => m.UtilitiesModule) },
-            //         { path: 'documentation', loadChildren: () => import('./demo/components/documentation/documentation.module').then(m => m.DocumentationModule) },
-            //         { path: 'blocks', loadChildren: () => import('./demo/components/primeblocks/primeblocks.module').then(m => m.PrimeBlocksModule) },
-            //         { path: 'pages', loadChildren: () => import('./demo/components/pages/pages.module').then(m => m.PagesModule) }
-            //     ]
-            // },
             { path: 'auth', loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule) },
             { path: 'landing', loadChildren: () => import('./main/landing/landing.module').then(m => m.LandingModule) },
             { path: 'notfound', component: NotfoundComponent },
