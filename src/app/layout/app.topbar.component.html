@@ -27,9 +27,19 @@
             <i class="pi pi-user"></i>
             <span>Profile</span>
         </button>
-        <button class="p-link layout-topbar-button" [routerLink]="'/documentation'">
-            <i class="pi pi-cog"></i>
-            <span>Settings</span>
+        <button class="p-link layout-topbar-button" (click)="logOut()">
+            <i class="pi pi-fw pi-power-off"></i>
+            <span>Logout</span>
         </button>
     </div>
 </div>
+<p-dialog [(visible)]="logoutDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span>Do you want to logout?</span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="logoutDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmLogout()"></button>
+    </ng-template>
+</p-dialog>

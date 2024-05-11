@@ -1,6 +1,9 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { LayoutService } from "./service/app.layout.service";
+import { AuthService } from '../@service/auth.service';
+import { Router } from '@angular/router';
+
 
 @Component({
     selector: 'app-topbar',
@@ -9,6 +12,7 @@ import { LayoutService } from "./service/app.layout.service";
 export class AppTopBarComponent {
 
     items!: MenuItem[];
+    logoutDialog:boolean=false;
 
     @ViewChild('menubutton') menuButton!: ElementRef;
 
@@ -18,7 +22,11 @@ export class AppTopBarComponent {
 
     checked: boolean = false;
 
-    constructor(public layoutService: LayoutService) { }
+    constructor(public layoutService: LayoutService,
+        private authService:AuthService,
+        private router: Router
+
+        ) { }
 
     set theme(val: string) {
         this.layoutService.config.update((config) => ({
@@ -56,5 +64,15 @@ export class AppTopBarComponent {
             this.changeTheme('lara-light-indigo', 'light');
             this.isDark=false;
         }
+    }
+
+    logOut(){
+        this.logoutDialog=true;
+    }
+    confirmLogout(){
+        this.logoutDialog=false;
+        this.authService.logout();
+        this.router.navigate(['/']);
+
     }
 }

@@ -31,6 +31,6 @@ export class AuthService {
         // console.log(localStorage);
         localStorage.removeItem('access_token');
         localStorage.removeItem('loggedInUser');
-        this.router.navigate(['/'])
+        this.router.navigate(['/']);
     }
 }
