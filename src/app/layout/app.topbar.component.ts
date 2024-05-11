@@ -1,7 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { LayoutService } from "./service/app.layout.service";
-import { AuthService } from '../@service/auth.service';
 import { Router } from '@angular/router';
 
 
@@ -23,9 +22,7 @@ export class AppTopBarComponent {
     checked: boolean = false;
 
     constructor(public layoutService: LayoutService,
-        private authService:AuthService,
         private router: Router
-
         ) { }
 
     set theme(val: string) {
@@ -71,8 +68,6 @@ export class AppTopBarComponent {
     }
     confirmLogout(){
         this.logoutDialog=false;
-        this.authService.logout();
-        this.router.navigate(['/']);
-
+        this.router.navigate(['/auth/logout']);
     }
 }
